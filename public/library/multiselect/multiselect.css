@@ -1,0 +1,26 @@
+
+
+details > ul {
+  list-style: none;
+  margin: 0px;
+  padding: 1px;
+  margin-top: 2px;
+  background-color: #e0e5ea;
+}
+fieldset > details > li {
+  margin: 0px;
+  padding: 0px;
+}
+fieldset > details >  label {
+  cursor: pointer;
+  display: inline-block;
+  width: 100%;
+}
+fieldset > details > ul > li:hover{
+  color: #621132;
+}
+
+fieldset > details > ul > li:has(input:checked) {
+  background-color: var(--dk-gray);
+  color: black;
+}
