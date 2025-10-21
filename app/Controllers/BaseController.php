@@ -61,7 +61,7 @@ abstract class BaseController extends Controller
         if (empty($CORE_NAME))
             die("<p><b>¡ERROR! No se han configurado los parámetros de la app. Comuníquese con el administrador</b></p>");
         define("CORE_NAME", $CORE_NAME[0]["nombre"]);
-        $exceptions = ["loginindex", "loginstart", "loginlogout"]; //Excepciones para evaluar de permisos
+        $exceptions = ["loginindex", "loginstart", "loginlogout", "constanciasconsultar", "constanciasvalidar", "constanciaspdf"]; //Excepciones para evaluar de permisos
         if (array_search(strtolower(CORE_CONTROLLER . CORE_METHOD), $exceptions) === false) { //Si el controlador con el método no son una excepcion
             if (strtolower(substr(CORE_METHOD, -6, 6)) != "action") { //Si no es una action (AJAX)
                 \App\Libraries\UserControl::page_permission(strtolower(CORE_CONTROLLER), strtolower(CORE_METHOD));

@@ -26,6 +26,27 @@ class Constancias extends BaseController
         return view("template/header_sneat") . view("constancias/index", $data) . view("template/footer_sneat");
     }
 
+
+    public function consultar()
+    {
+        return view("constancias/consultar");
+    }
+
+    public function validar()
+    {
+        if(!isset($_POST["nombre"], $_POST["folio"]))
+            return view("errors/html/error_404");
+        if (!preg_match('/^G-\d{8}$/', "G-".$_POST["folio"]))
+            return view("errors/html/error_404");
+        $nombre = $this->request->getPost('nombre');
+        $V_constanciasModel = new V_constanciasModel();
+        $nombre = $V_constanciasModel->escapeLikeString($nombre);
+        $constancia = $V_constanciasModel->like('nombre_alumno', $nombre, 'both')->findAll();
+        if(empty($constancia))
+            return view("errors/html/error_404");
+        return redirect()->to('/constancias/pdf/'.$constancia[0]["qr"]);
+    }
+
     public function nuevo() {}
 
     /**
@@ -76,13 +97,13 @@ class Constancias extends BaseController
     public function pdf($qr = null)
     {
         if (is_null($qr))
-            return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));
+            return view("errors/html/error_404");
         if (!ctype_xdigit($qr))
-            return $this->response->setJSON(array("status" => 0, "msg" => "Parámetros inválidos"));
+            return view("errors/html/error_404");
         $ConstanciasModel = new ConstanciasModel();
         $constancia = $ConstanciasModel->where("qr", $qr)->first();
         if (empty($constancia))
-            return $this->response->setJSON(array("status" => 0, "msg" => "No se halló información"));
+            return view("errors/html/error_404");
         $ciqrcode = new Ciqrcode();
         $filename = WRITEPATH . "/uploads/temp/" . $constancia["qr"] . ".png";
         $config['cacheable'] = true;
