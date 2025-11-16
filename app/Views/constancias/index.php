@@ -3,7 +3,7 @@
 	<div class="card-body">
 		<div class="btn-group btn-group-sm mb-2" role="group">
 			<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_insert">Añadir Constancia</button>
-			<button type="button" class="btn btn-success btn-sm" >Descargar Excel</button>
+			<a class="btn btn-success btn-sm" href="<?= base_url("excel/constanciasAction") ?>">Descargar Excel</a>
 		</div>
 		<div class="table-responsive text-nowrap">
 			<table id='constancias' class='table table-striped table-sm text-center table-bordered text-nowrap'>

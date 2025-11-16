@@ -2,11 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\C_analisisModel;
-use App\Models\C_clientesModel;
-use App\Models\V_excel_analisisModel;
-use App\Models\V_muestrasModel;
-use App\Models\V_reporte_generalModel;
+use App\Models\V_constanciasModel;
 
 class Excel extends BaseController
 {
@@ -14,12 +10,13 @@ class Excel extends BaseController
     {
     }
 
-    public function reportesAction()
+    public function constanciasAction()
     {   
-        $C_clientesModel = new C_clientesModel();
-        $clientes = $C_clientesModel->select("primer_apellido, segundo_apellido, nombres, clinica, telefono, correo, status, creacion")->findAll();
-        $data = ["Primer apellido", "Segundo apellido", "Nombre", "Clínica", "Teléfono", "Correo electrónico", "Status", "Creación"];
-        array_unshift($clientes , $data);
-        \App\Libraries\Utilidades::download_xlsx("catalogo_clientes", $clientes);
+        $url = "https://portal.gerardosescuelademanejo.com.mx/constancias/pdf/";
+        $V_constanciasModel = new V_constanciasModel();
+        $constancias = $V_constanciasModel->select("id_instructor, CONCAT('G-', year(fecha), folio) folio, nombre_alumno, fecha_inicio, fecha_final, fecha, concat('$url', qr) qr, creacion")->findAll();
+        $data = ["Instructor", "Folio", "Alumno", "Inicio de curso", " Fin de curso", "Fecha de constancia", "QR de validacion", "Creación del registro"];
+        array_unshift($constancias , $data);
+        \App\Libraries\Utilidades::download_xlsx("constancias", $constancias);
     }
 }
