@@ -72,7 +72,7 @@ class Constancias extends BaseController
 
     public function insertConstanciaAction()
     {
-        if (!isset($_POST["id_instructor"], $_POST["folio"], $_POST["nombre_alumno"], $_POST["fecha_inicio"], $_POST["fecha_final"], $_POST["fecha"], $_POST["status"]))
+        if (!isset($_POST["id_instructor"], $_POST["folio"], $_POST["nombre_alumno"], $_POST["fecha_inicio"], $_POST["fecha_final"], $_POST["fecha"]))
             return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));
         $ConstanciasModel = new ConstanciasModel();
         $data = [
@@ -89,6 +89,24 @@ class Constancias extends BaseController
         if ($id == 0)
             return $this->response->setJSON(array("status" => 0, "msg" => "No se pudo guardar la información"));
         return $this->response->setJSON(array("status" => 1, "msg" => "¡Guardado!"));
+    }
+
+    public function deleteConstanciaAction()
+    {
+        if (!isset($_POST["id"]))
+            return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));
+        $ConstanciasModel = new ConstanciasModel();
+        
+    }
+
+    public function getFolioByYear(){
+        if (!isset($_POST["date"]))
+            return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));    
+        $ConstanciasModel = new ConstanciasModel();
+        $year = $ConstanciasModel->select("count(*) as count")->where("YEAR(fecha)", intval($_POST["date"]))->findAll()[0];
+        $folio = $year["count"] == "" ? 1 : $year["count"] += 1;
+        return $this->response->setJson(["status" => 1, "data" => ["folio" => str_pad($folio, 4, "0", STR_PAD_LEFT)]]);
+
     }
 
     /**

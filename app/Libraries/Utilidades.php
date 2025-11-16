@@ -42,9 +42,9 @@ class Utilidades
         $DominiosModel = new DominiosModel();
         $location = $DominiosModel->where("dominio", "EXCEL_LOCATION")->findAll();
         if (empty($location))
-            die(json_encode(["status" => 0, "msg" => "Existió un error al consultar la localización del archivo de Excel"]));  
-        copy($location[0]["valor"], dirname(__FILE__, 3)."/respaldos/".time().".xlsx");
-        foreach($rows as $r){
+            die(json_encode(["status" => 0, "msg" => "Existió un error al consultar la localización del archivo de Excel"]));
+        copy($location[0]["valor"], dirname(__FILE__, 3) . "/respaldos/" . time() . ".xlsx");
+        foreach ($rows as $r) {
             $objPHPExcel = PHPExcel_IOFactory::load($location[0]["valor"]);
             $objPHPExcel->setActiveSheetIndexByName(strval(date("Y")));
             $row = $objPHPExcel->getActiveSheet()->getHighestRow() + 1;
@@ -67,10 +67,9 @@ class Utilidades
             $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
             $objWriter->save($location[0]["valor"]);
         }
-
     }
 
-        /**
+    /**
      * Genera un xlsx con contraseña a partir de una plantilla existente
      * @param string $filename es el nombre del archivo, que luego se concatenará con la fecha actual
      * @param string $title es el titulo que tendrá el excel
@@ -83,7 +82,7 @@ class Utilidades
      */
     public static function download_xlsx_encrypted_from_template($filename, $title, $sheet_name, $data, $password, $templatename, $start, $numeration = false)
     {
-        $template = getcwd()."/public/files/template/".$templatename;
+        $template = getcwd() . "/public/files/template/" . $templatename;
         $objPHPExcel = new PHPExcel();
         $objPHPExcel->getProperties()->setCreator("Secretaría de Educación del Estado de Tabasco")
             ->setLastModifiedBy("Secretaría de Educación del Estado de Tabasco")
@@ -92,10 +91,10 @@ class Utilidades
         $objReader = PHPExcel_IOFactory::createReader('Excel2007');
         $objPHPExcel = $objReader->load($template);
         $c = $start;
-        foreach ($data as $k=>$r) {
-            $objPHPExcel->getActiveSheet()->fromArray($r, null, "A".($c));
+        foreach ($data as $k => $r) {
+            $objPHPExcel->getActiveSheet()->fromArray($r, null, "A" . ($c));
             $c++;
-        } 
+        }
         //$objPHPExcel->getActiveSheet()->getStyle('A1:BZ1')->getFill()->getStartColor()->setRGB('F28A8C');
         $objPHPExcel->getActiveSheet()->setTitle($sheet_name);
         $objPHPExcel->getActiveSheet()->getProtection()->setSheet(true);
@@ -113,7 +112,7 @@ class Utilidades
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         ob_clean();
-        flush(); 
+        flush();
         $objWriter->save('php://output');
     }
 
@@ -212,12 +211,32 @@ class Utilidades
      */
     static function date_to_text($date, $upper, $day = "d")
     {
-        $d = strftime("%$day", strtotime($date));
-        $m = strftime('%B', strtotime($date));
-        $y = strftime('%Y', strtotime($date));
+        // Día
+        $d = date($day, strtotime($date));
+
+        // Mes en español con IntlDateFormatter
+        $formatter = new \IntlDateFormatter(
+            'es_MX',                        // o 'es_ES' si prefieres España
+            \IntlDateFormatter::NONE,
+            \IntlDateFormatter::NONE,
+            'UTC',
+            \IntlDateFormatter::GREGORIAN
+        );
+        $formatter->setPattern('MMMM');      // nombre completo del mes
+
+        $m = $formatter->format(new \DateTime($date));
+
+        // Año
+        $y = date("Y", strtotime($date));
+
+        // Armado del arreglo
         $array = ["d" => $d, "m" => $m, "y" => $y];
-        if ($upper)
-            $array = array_map('strtoupper', $array);
+
+        // Convertir a mayúsculas si se pide
+        if ($upper) {
+            $array = array_map('mb_strtoupper', $array);
+        }
+
         return $array;
     }
 

@@ -3,17 +3,18 @@
 	<div class="card-body">
 		<div class="btn-group btn-group-sm mb-2" role="group">
 			<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_insert">Añadir Constancia</button>
+			<button type="button" class="btn btn-success btn-sm" >Descargar Excel</button>
 		</div>
 		<div class="table-responsive text-nowrap">
 			<table id='constancias' class='table table-striped table-sm text-center table-bordered text-nowrap'>
 				<thead>
 					<th class='text-center'>ACCIONES</th>
 					<th class='text-center'>INSTRUCTOR</th>
-					<th class='text-center'>FOLIO</th>
 					<th class='text-center'>NOMBRE DEL ALUMNO</th>
 					<th class='text-center'>FECHA INICIO</th>
 					<th class='text-center'>FECHA FINAL</th>
 					<th class='text-center'>FECHA CONSTANCIA</th>
+					<th class='text-center'>FOLIO</th>
 					<th class='text-center'>CREACIÓN</th>
 					<thead>
 					<tbody>
@@ -22,16 +23,16 @@
 								<td>
 									<div class="btn-group btn-group-xs" role="group">
 										<button type="button" class="btn btn-success btn-xs" onclick="s_CallModalEdit(this)" title="Editar"><i class='bx bx-pencil'></i></button>
-										<a class="btn btn-primary btn-xs"href="<?= base_url("constancias/pdf/{$r['qr']}") ?>" title="Constancia" target="_blank"><i class='bx bx-file'></i></a>
+										<a class="btn btn-primary btn-xs" href="<?= base_url("constancias/pdf/{$r['qr']}") ?>" title="Constancia" target="_blank"><i class='bx bx-file'></i></a>
 										<button type="button" class="btn btn-danger btn-xs" onclick="s_deleteRow()" title="Eliminar"><i class='bx bx-trash'></i></button>
 									</div>
 								</td>
 								<td id="id_instructor"><?= $r["id_instructor"] ?></td>
-								<td id="folio"><?= $r["folio"] ?></td>
 								<td id="nombre_alumno"><?= $r["nombre_alumno"] ?></td>
 								<td id="fecha_inicio"><?= $r["fecha_inicio"] ?></td>
 								<td id="fecha_final"><?= $r["fecha_final"] ?></td>
 								<td id="fecha"><?= $r["fecha"] ?></td>
+								<td id="folio"><?= $r["folio"] ?></td>
 								<td id="creacion"><?= $r["creacion"] ?></td>
 							</tr>
 						<?php } ?>
@@ -62,10 +63,6 @@
 									</select>
 								</div>
 								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
-									<label class='form-label' for='folio'>Folio: </label>
-									<input type='text' class='form-control form-control-sm' id='folio' name='folio' placeholder='' required />
-								</div>
-								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
 									<label class='form-label' for='nombre_alumno'>Nombre alumno: </label>
 									<input type='text' class='form-control form-control-sm' id='nombre_alumno' name='nombre_alumno' placeholder='' required />
 								</div>
@@ -84,6 +81,10 @@
 								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
 									<label class='form-label' for='fecha'>Fecha de constancia: </label>
 									<input type='text' class='form-control form-control-sm' id='creacion' name='creacion' placeholder='' readonly required />
+								</div>
+								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
+									<label class='form-label' for='folio'>Folio: </label>
+									<input type='text' class='form-control form-control-sm' id='folio' name='folio' placeholder='' required />
 								</div>
 							</div>
 						</form>
@@ -118,10 +119,6 @@
 									</select>
 								</div>
 								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
-									<label class='form-label' for='folio'>Folio: </label>
-									<input type='text' class='form-control form-control-sm' id='folio' name='folio' placeholder='' required />
-								</div>
-								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
 									<label class='form-label' for='nombre_alumno'>Nombre alumno: </label>
 									<input type='text' class='form-control form-control-sm' id='nombre_alumno' name='nombre_alumno' placeholder='' required />
 								</div>
@@ -136,6 +133,10 @@
 								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
 									<label class='form-label' for='fecha'>Fecha de constancia: </label>
 									<input type='date' class='form-control form-control-sm' id='fecha' name='fecha' placeholder='' required />
+								</div>
+								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
+									<label class='form-label' for='folio'>Folio: </label>
+									<input type='text' class='form-control form-control-sm' id='folio' name='folio' placeholder='' required />
 								</div>
 							</div>
 						</form>
@@ -154,5 +155,42 @@
 	window.onload = function(event) {
 		DATATABLE = s_Datatable("constancias");
 
+		document.querySelector("#modal_insert #fecha").addEventListener("change", function() {
+			obtieneFolio();
+		});
 	};
+
+	function obtieneFolio() {
+		fecha = document.querySelector("#modal_insert #fecha").value;
+		if (fecha == "" || typeof fecha === "undefined" || fecha == "000-00-00" || fecha == null) {
+			s_SwalFire(
+				"error",
+				"¡Error!",
+				"Fecha no válida"
+			);
+			return false;
+		}
+		$.ajax({
+			url: "<?=  base_url("constancias/getFolioByYear") ?>",
+			data: {
+				date: fecha
+			},
+			type: "POST",
+			dataType: "json",
+			success: function(response) {
+				if (response.status == 1) {
+					document.querySelector("#modal_insert #folio").value = response.data.folio;
+				} else {
+					s_SwalFire("info", "¡Importante!", response.msg);
+				}
+			},
+			error: function(xhr, status) {
+				s_SwalFire(
+					"error",
+					"¡Error!",
+					"Existió un problema al procesar la solicitud. " + status + xhr
+				);
+			},
+		});
+	}
 </script>
