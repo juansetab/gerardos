@@ -28,7 +28,7 @@ class Documentos
         $pdf->SetFont('Arial', 'B', 25);
         $pdf->SetXY(210, 42);
         $pdf->SetTextColor(255, 0, 0);
-        $pdf->Cell(50, 8, $this->UFT8(mb_strtoupper("G-$y{$constancia["folio"]}", "UTF-8")), 0, 1, "C");
+        $pdf->Cell(50, 8, $this->UFT8(mb_strtoupper($constancia['folio'], "UTF-8")), 0, 1, "C");
         $pdf->SetTextColor(0, 0, 0);
         $pdf->SetFont('Arial', 'B', 25);
         $pdf->SetXY(37, 103);

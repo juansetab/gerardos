@@ -82,10 +82,6 @@
 									<label class='form-label' for='fecha'>Fecha de constancia: </label>
 									<input type='text' class='form-control form-control-sm' id='creacion' name='creacion' placeholder='' readonly required />
 								</div>
-								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
-									<label class='form-label' for='folio'>Folio: </label>
-									<input type='text' class='form-control form-control-sm' id='folio' name='folio' placeholder='' required />
-								</div>
 							</div>
 						</form>
 					</div>
@@ -134,10 +130,6 @@
 									<label class='form-label' for='fecha'>Fecha de constancia: </label>
 									<input type='date' class='form-control form-control-sm' id='fecha' name='fecha' placeholder='' required />
 								</div>
-								<div class='form-group col-md-4 col-sm-12 col-lg-4'>
-									<label class='form-label' for='folio'>Folio: </label>
-									<input type='text' class='form-control form-control-sm' id='folio' name='folio' placeholder='' required />
-								</div>
 							</div>
 						</form>
 					</div>
@@ -155,44 +147,9 @@
 	window.onload = function(event) {
 		DATATABLE = s_Datatable("constancias");
 
-		document.querySelector("#modal_insert #fecha").addEventListener("change", function() {
-			obtieneFolio();
-		});
+
 	};
 
-	function obtieneFolio() {
-		fecha = document.querySelector("#modal_insert #fecha").value;
-		if (fecha == "" || typeof fecha === "undefined" || fecha == "000-00-00" || fecha == null) {
-			s_SwalFire(
-				"error",
-				"¡Error!",
-				"Fecha no válida"
-			);
-			return false;
-		}
-		$.ajax({
-			url: "<?=  base_url("constancias/getFolioByYear") ?>",
-			data: {
-				date: fecha
-			},
-			type: "POST",
-			dataType: "json",
-			success: function(response) {
-				if (response.status == 1) {
-					document.querySelector("#modal_insert #folio").value = response.data.folio;
-				} else {
-					s_SwalFire("info", "¡Importante!", response.msg);
-				}
-			},
-			error: function(xhr, status) {
-				s_SwalFire(
-					"error",
-					"¡Error!",
-					"Existió un problema al procesar la solicitud. " + status + xhr
-				);
-			},
-		});
-	}
 
 	function delete_row(element) {
         tr = $(element).parent().parent().parent();

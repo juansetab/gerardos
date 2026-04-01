@@ -54,12 +54,11 @@ class Constancias extends BaseController
 
     public function updateConstanciaAction()
     {
-        if (!isset($_POST["id"], $_POST["id_instructor"], $_POST["folio"], $_POST["nombre_alumno"], $_POST["fecha_inicio"], $_POST["fecha_final"], $_POST["fecha"]))
+        if (!isset($_POST["id"], $_POST["id_instructor"], $_POST["nombre_alumno"], $_POST["fecha_inicio"], $_POST["fecha_final"], $_POST["fecha"]))
             return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));
         $ConstanciasModel = new ConstanciasModel();
         $data = [
             "id_instructor" => $_POST["id_instructor"],
-            "folio" => $_POST["folio"],
             "nombre_alumno" => $_POST["nombre_alumno"],
             "fecha_inicio" => $_POST["fecha_inicio"],
             "fecha_final" => $_POST["fecha_final"],
@@ -71,12 +70,11 @@ class Constancias extends BaseController
 
     public function insertConstanciaAction()
     {
-        if (!isset($_POST["id_instructor"], $_POST["folio"], $_POST["nombre_alumno"], $_POST["fecha_inicio"], $_POST["fecha_final"], $_POST["fecha"]))
+        if (!isset($_POST["id_instructor"], $_POST["nombre_alumno"], $_POST["fecha_inicio"], $_POST["fecha_final"], $_POST["fecha"]))
             return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));
         $ConstanciasModel = new ConstanciasModel();
         $data = [
             "id_instructor" => $_POST["id_instructor"],
-            "folio" => $_POST["folio"],
             "nombre_alumno" => $_POST["nombre_alumno"],
             "fecha_inicio" => $_POST["fecha_inicio"],
             "fecha_final" => $_POST["fecha_final"],
@@ -101,14 +99,6 @@ class Constancias extends BaseController
 
     }
 
-    public function getFolioByYear(){
-        if (!isset($_POST["date"]))
-            return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));    
-        $ConstanciasModel = new ConstanciasModel();
-        $year = $ConstanciasModel->select("count(*) as count")->where("YEAR(fecha)", intval($_POST["date"]))->findAll()[0];
-        $folio = $year["count"] == "" ? 1 : $year["count"] += 1;
-        return $this->response->setJson(["status" => 1, "data" => ["folio" => str_pad($folio, 4, "0", STR_PAD_LEFT)]]);
-    }
 
     /**
      * FORMATOS
@@ -119,7 +109,7 @@ class Constancias extends BaseController
             return view("errors/html/error_404");
         if (!ctype_xdigit($qr))
             return view("errors/html/error_404");
-        $ConstanciasModel = new ConstanciasModel();
+        $ConstanciasModel = new V_constanciasModel();
         $constancia = $ConstanciasModel->where("qr", $qr)->first();
         if (empty($constancia))
             return view("errors/html/error_404");
