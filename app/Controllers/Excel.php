@@ -14,7 +14,8 @@ class Excel extends BaseController
     {   
         $url = "https://portal.gerardosescuelademanejo.com.mx/constancias/pdf/";
         $V_constanciasModel = new V_constanciasModel();
-        $constancias = $V_constanciasModel->select("id_instructor, CONCAT('G-', year(fecha), folio) folio, nombre_alumno, fecha_inicio, fecha_final, fecha, concat('$url', qr) qr, creacion")->findAll();
+        $constancias = $V_constanciasModel->select("id_instructor, CONCAT('G-', year(fecha), folio) folio, nombre_alumno, fecha_inicio, fecha_final, fecha, concat('$url', qr) qr, creacion")->
+        where("status", 1)->findAll();
         $data = ["Instructor", "Folio", "Alumno", "Inicio de curso", " Fin de curso", "Fecha de constancia", "QR de validacion", "Creación del registro"];
         array_unshift($constancias , $data);
         \App\Libraries\Utilidades::download_xlsx("constancias", $constancias);

@@ -20,12 +20,11 @@ class Constancias extends BaseController
     {
         $V_constanciasModel = new V_constanciasModel();
         $C_instructores = new C_instructoresModel();
-        $contancias = $V_constanciasModel->where("status", 1)->findAll();
+        $contancias = $V_constanciasModel->where("status", 1)->orderBy("id", "DESC")->findAll();
         $instructores = $C_instructores->where("status", 1)->findAll();
         $data = ["constancias" => $contancias, "instructores" => $instructores];
         return view("template/header_sneat") . view("constancias/index", $data) . view("template/footer_sneat");
     }
-
 
     public function consultar()
     {
@@ -93,10 +92,13 @@ class Constancias extends BaseController
 
     public function deleteConstanciaAction()
     {
-        if (!isset($_POST["id"]))
+        //return json_encode($_POST);
+        if (!isset($_POST["delete_id"]))
             return $this->response->setJSON(array("status" => 0, "msg" => "Falta información"));
         $ConstanciasModel = new ConstanciasModel();
-        
+        $ConstanciasModel->set("status", 0)->where("id", intval($_POST["delete_id"]))->update();
+        return $this->response->setJSON(array("status" => 1, "msg" => "Eliminado!"));
+
     }
 
     public function getFolioByYear(){
@@ -106,7 +108,6 @@ class Constancias extends BaseController
         $year = $ConstanciasModel->select("count(*) as count")->where("YEAR(fecha)", intval($_POST["date"]))->findAll()[0];
         $folio = $year["count"] == "" ? 1 : $year["count"] += 1;
         return $this->response->setJson(["status" => 1, "data" => ["folio" => str_pad($folio, 4, "0", STR_PAD_LEFT)]]);
-
     }
 
     /**
@@ -130,7 +131,7 @@ class Constancias extends BaseController
         $config['black'] = [255, 255, 255];
         $config['white'] = [255, 255, 255];
         $ciqrcode->initialize($config);
-        $params['data'] = base_url("constancias/validar/" . $constancia["qr"]);
+        $params['data'] = base_url("constancias/pdf/" . $constancia["qr"]);
         $params['level'] = 'L';
         $params['size'] = 10;
         $params['savename'] = $filename;

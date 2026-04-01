@@ -21,6 +21,9 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
+        'noindex'       => \App\Filters\NoIndexFilter::class,
+        'auth'          => \App\Filters\AuthFilter::class,
+        'ratelimit'     => \App\Filters\RateLimitFilter::class
     ];
 
     /**
@@ -35,6 +38,7 @@ class Filters extends BaseConfig
         ],
         'after' => [
             'toolbar',
+            'noindex'
             // 'honeypot',
             // 'secureheaders',
         ],

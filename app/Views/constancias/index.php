@@ -24,7 +24,7 @@
 									<div class="btn-group btn-group-xs" role="group">
 										<button type="button" class="btn btn-success btn-xs" onclick="s_CallModalEdit(this)" title="Editar"><i class='bx bx-pencil'></i></button>
 										<a class="btn btn-primary btn-xs" href="<?= base_url("constancias/pdf/{$r['qr']}") ?>" title="Constancia" target="_blank"><i class='bx bx-file'></i></a>
-										<button type="button" class="btn btn-danger btn-xs" onclick="s_deleteRow()" title="Eliminar"><i class='bx bx-trash'></i></button>
+										<button type="button" class="btn btn-danger btn-xs" onclick="delete_row(this)" title="Eliminar"><i class='bx bx-trash'></i></button>
 									</div>
 								</td>
 								<td id="id_instructor"><?= $r["id_instructor"] ?></td>
@@ -193,4 +193,10 @@
 			},
 		});
 	}
+
+	function delete_row(element) {
+        tr = $(element).parent().parent().parent();
+        id = $(tr).data("id-row");
+        s_deleteRow(id, "<?= base_url("constancias/deleteConstanciaAction") ?>", tr);
+    }
 </script>
