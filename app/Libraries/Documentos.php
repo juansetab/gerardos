@@ -48,9 +48,14 @@ class Documentos
         }
         $pdf->Cell(260, 5, $this->UFT8($periodoTxt, "UTF-8"), 0, 1, "C");
         $fecha = \App\Libraries\Utilidades::date_to_text($constancia["fecha"], false, "d");
-        $pdf->SetFont('Arial', 'B', 15);
-        $pdf->SetXY(140, 196);
-        $pdf->Cell(212, 12, $this->UFT8("Villahermosa, Tabasco a {$fecha['d']} de {$fecha['m']} de {$fecha['y']}", "UTF-8"), 0, 1, "L");
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->SetXY(16, 190);
+        $pdf->Cell(70, 6, $this->UFT8("Zenzontle 162,", "UTF-8"), 0, 1, "L");
+        $pdf->Cell(87, 6, $this->UFT8("Fracc. la Ceiba Deportiva C.P. 86127", "UTF-8"), 0, 1, "L");
+        $pdf->SetXY(110, 196);
+        $pdf->Cell(212, 6, $this->UFT8("993 322 6612", "UTF-8"), 0, 1, "L");
+        $pdf->SetXY(149, 196);
+        $pdf->Cell(120, 6, $this->UFT8("Villahermosa, Tabasco a {$fecha['d']} de diciembre de {$fecha['y']}", "UTF-8"), 0, 1, "R");
         die($pdf->Output("I"));
     }
 
