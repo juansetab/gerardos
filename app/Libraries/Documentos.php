@@ -55,7 +55,7 @@ class Documentos
         $pdf->SetXY(110, 196);
         $pdf->Cell(212, 6, $this->UFT8("993 322 6612", "UTF-8"), 0, 1, "L");
         $pdf->SetXY(149, 196);
-        $pdf->Cell(120, 6, $this->UFT8("Villahermosa, Tabasco a {$fecha['d']} de diciembre de {$fecha['y']}", "UTF-8"), 0, 1, "R");
+        $pdf->Cell(120, 6, $this->UFT8("Villahermosa, Tabasco a {$fecha['d']} de {$fecha['m']} de {$fecha['y']}", "UTF-8"), 0, 1, "R");
         die($pdf->Output("I"));
     }
 
